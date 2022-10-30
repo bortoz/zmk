@@ -118,7 +118,7 @@ static struct led_rgb hsb_to_rgb(struct zmk_led_hsb hsb) {
         break;
     }
 
-    struct led_rgb rgb = {r : r * 255, g : g * 255, b : b * 255};
+    struct led_rgb rgb = {.r = r * 255, .g = g * 255, .b = b * 255};
 
     return rgb;
 }
@@ -245,17 +245,16 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
     }
 #endif
 
-    state = (struct rgb_underglow_state){
-        color : {
-            h : CONFIG_ZMK_RGB_UNDERGLOW_HUE_START,
-            s : CONFIG_ZMK_RGB_UNDERGLOW_SAT_START,
-            b : CONFIG_ZMK_RGB_UNDERGLOW_BRT_START,
-        },
-        animation_speed : CONFIG_ZMK_RGB_UNDERGLOW_SPD_START,
-        current_effect : CONFIG_ZMK_RGB_UNDERGLOW_EFF_START,
-        animation_step : 0,
-        on : IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_ON_START)
-    };
+    state = (struct rgb_underglow_state){.color =
+                                             {
+                                                 .h = CONFIG_ZMK_RGB_UNDERGLOW_HUE_START,
+                                                 .s = CONFIG_ZMK_RGB_UNDERGLOW_SAT_START,
+                                                 .b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_START,
+                                             },
+                                         .animation_speed = CONFIG_ZMK_RGB_UNDERGLOW_SPD_START,
+                                         .current_effect = CONFIG_ZMK_RGB_UNDERGLOW_EFF_START,
+                                         .animation_step = 0,
+                                         .on = IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_ON_START)};
 
 #if IS_ENABLED(CONFIG_SETTINGS)
     settings_subsys_init();
@@ -333,7 +332,7 @@ int zmk_rgb_underglow_off() {
 #endif
 
     for (int i = 0; i < STRIP_NUM_PIXELS; i++) {
-        pixels[i] = (struct led_rgb){r : 0, g : 0, b : 0};
+        pixels[i] = (struct led_rgb){.r = 0, .g = 0, .b = 0};
     }
 
     led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
