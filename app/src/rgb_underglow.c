@@ -42,6 +42,9 @@ enum rgb_underglow_effect {
     UNDERGLOW_EFFECT_BREATHE,
     UNDERGLOW_EFFECT_SPECTRUM,
     UNDERGLOW_EFFECT_SWIRL,
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EFF_USER)
+    UNDERGLOW_EFFECT_USER,
+#endif
     UNDERGLOW_EFFECT_NUMBER // Used to track number of underglow effects
 };
 
@@ -168,6 +171,10 @@ static void zmk_rgb_underglow_effect_swirl() {
     state.animation_step = state.animation_step % HUE_MAX;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EFF_USER)
+extern void zmk_rgb_underglow_effect_user(int num_pixels, struct led_rgb* pixels);
+#endif
+
 static void zmk_rgb_underglow_tick(struct k_work *work) {
     switch (state.current_effect) {
     case UNDERGLOW_EFFECT_SOLID:
@@ -182,6 +189,11 @@ static void zmk_rgb_underglow_tick(struct k_work *work) {
     case UNDERGLOW_EFFECT_SWIRL:
         zmk_rgb_underglow_effect_swirl();
         break;
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EFF_USER)
+    case UNDERGLOW_EFFECT_USER:
+        zmk_rgb_underglow_effect_user(STRIP_NUM_PIXELS, pixels);
+        break;
+#endif
     }
 
     led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
