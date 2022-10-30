@@ -187,7 +187,7 @@ static void zmk_rgb_underglow_tick(struct k_work *work) {
     led_strip_update_rgb(led_strip, pixels, STRIP_NUM_PIXELS);
 }
 
-K_WORK_DEFINE(underglow_work, zmk_rgb_underglow_tick);
+static K_WORK_DEFINE(underglow_work, zmk_rgb_underglow_tick);
 
 static void zmk_rgb_underglow_tick_handler(struct k_timer *timer) {
     if (!state.on) {
@@ -197,7 +197,7 @@ static void zmk_rgb_underglow_tick_handler(struct k_timer *timer) {
     k_work_submit(&underglow_work);
 }
 
-K_TIMER_DEFINE(underglow_tick, zmk_rgb_underglow_tick_handler, NULL);
+static K_TIMER_DEFINE(underglow_tick, zmk_rgb_underglow_tick_handler, NULL);
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_cb, void *cb_arg) {
@@ -220,7 +220,7 @@ static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_
     return -ENOENT;
 }
 
-struct settings_handler rgb_conf = {.name = "rgb/underglow", .h_set = rgb_settings_set};
+static struct settings_handler rgb_conf = {.name = "rgb/underglow", .h_set = rgb_settings_set};
 
 static void zmk_rgb_underglow_save_state_work() {
     settings_save_one("rgb/underglow/state", &state, sizeof(state));
@@ -281,7 +281,7 @@ static int zmk_rgb_underglow_init(const struct device *_arg) {
     return 0;
 }
 
-int zmk_rgb_underglow_save_state() {
+static int zmk_rgb_underglow_save_state() {
 #if IS_ENABLED(CONFIG_SETTINGS)
     int ret = k_work_reschedule(&underglow_save_work, K_MSEC(CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE));
     return MIN(ret, 0);
